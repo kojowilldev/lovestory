@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Our Love Story</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cursive', sans-serif;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      color: white;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    section {
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 50px;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    section.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 3em;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 15px pink; }
+      to { text-shadow: 0 0 35px red; }
+    }
+
+    .photo {
+      width: 250px;
+      height: 300px;
+      margin: 20px;
+      border: 8px solid white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      overflow: hidden;
+      animation: slowZoom 10s ease-in-out infinite alternate;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .nav-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 10px;
+      background: #ff6f91;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      margin: 10px;
+    }
+
+    button:hover {
+      background: #ff3c6f;
+      transform: scale(1.05);
+    }
+
+    .countdown {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sections -->
+  <section class="active">
+    <h1>It All Began With Your Smile 🌸</h1>
+    <div class="photo"><img src="tina1.jpg.jpeg" alt="Her Smile"></div>
+    <div class="nav-buttons">
+      <button onclick="nextSection()">Next ➡️</button>
+    </div>
+  </section>
+
+  <section>
+    <h1>Every Laugh Made My World Brighter ✨</h1>
+    <div class="photo"><img src="tina3.jpg.jpg" alt="Her Laugh"></div>
+    <div class="nav-buttons">
+      <button onclick="prevSection()">⬅️ Back</button>
+      <button onclick="nextSection()">Next ➡️</button>
+    </div>
+  </section>
+
+  <section>
+    <h1>With You, Every Day Is Magic 💫</h1>
+    <div class="photo"><img src="tina2.jpg.jpeg" alt="Her Beauty"></div>
+    <div class="nav-buttons">
+      <button onclick="prevSection()">⬅️ Back</button>
+      <button onclick="nextSection()">Next ➡️</button>
+    </div>
+  </section>
+
+  <section>
+    <h1>Will You Be My Valentine? 💌</h1>
+    <div class="nav-buttons">
+      <button onclick="prevSection()">⬅️ Back</button>
+      <button onclick="answer('yes')">Yes 💖</button>
+      <button onclick="answer('no')">No 😢</button>
+    </div>
+  </section>
+
+  <section id="fireworks">
+    <h1>You Said YES! 🎆</h1>
+    <p>Forever starts now ❤️</p>
+    <div class="countdown" id="countdownYes"></div>
+    <div class="nav-buttons">
+      <button onclick="restartStory()">Restart 🔄</button>
+    </div>
+  </section>
+
+  <section id="noPath">
+    <h1>You Said No... But Guess What 😉</h1>
+    <p>You can’t escape my love anyway 💕</p>
+    <div class="countdown" id="countdownNo"></div>
+    <div class="nav-buttons">
+      <button onclick="restartStory()">Restart 🔄</button>
+    </div>
+  </section>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop>
+    <source src="perfect-ed-sheeran.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let currentSection = 0;
+    const sections = document.querySelectorAll("section");
+    const music = document.getElementById("bgMusic");
+
+    function showSection(index) {
+      sections.forEach(sec => sec.classList.remove("active"));
+      sections[index].classList.add("active");
+      if (music.paused) {
+        music.play().catch(err => console.log("Autoplay blocked until click"));
+      }
+    }
+
+    function nextSection() {
+      if (currentSection < sections.length - 1) {
+        currentSection++;
+        showSection(currentSection);
+      }
+    }
+
+    function prevSection() {
+      if (currentSection > 0) {
+        currentSection--;
+        showSection(currentSection);
+      }
+    }
+
+    function answer(choice) {
+      if (choice === 'yes') {
+        showSection([...sections].indexOf(document.getElementById("fireworks")));
+        startCountdown("countdownYes", "https://wa.me/233543909973?text=I%20said%20YES!%20💖");
+      } else {
+        showSection([...sections].indexOf(document.getElementById("noPath")));
+        startCountdown("countdownNo", "https://wa.me/233543909973?text=I%20said%20NO...%20😢");
+      }
+    }
+
+    function startCountdown(elementId, url) {
+      let timeLeft = 3;
+      const countdownEl = document.getElementById(elementId);
+      countdownEl.textContent = `Redirecting in ${timeLeft}...`;
+      const timer = setInterval(() => {
+        timeLeft--;
+        countdownEl.textContent = `Redirecting in ${timeLeft}...`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          window.location.href = url;
+        }
+      }, 1000);
+    }
+
+    function restartStory() {
+      currentSection = 0;
+      showSection(currentSection);
+    }
+  </script>
+</body>
+</html>
